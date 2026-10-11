@@ -59,6 +59,21 @@ curl -X POST localhost:8080/api/cart/u1/items -H 'Content-Type: application/json
 curl -X POST localhost:8080/api/orders -H 'Content-Type: application/json' -d '{"userId":"u1"}'
 ```
 
+## Tests
+
+```bash
+./mvnw test                       # all modules (Docker must be running for Testcontainers)
+./mvnw -pl order-service test     # one module
+```
+
+| Level | Tools | Examples |
+|---|---|---|
+| Unit | JUnit 5, Mockito | `ProductServiceTest`, `CartServiceTest`, `OrderServiceTest` (incl. stock rollback) |
+| Web layer | `@WebMvcTest`, `MockMvcTester` | `*ControllerTest`: status codes, validation, error JSON, 503 handling |
+| HTTP clients | `MockRestServiceServer` | `ProductClientTest`, `ClientsTest`: requests sent, errors relayed |
+| Integration | `@SpringBootTest`, Testcontainers MongoDB | `ProductApiIntegrationTest`: real database |
+| Routing | `@SpringBootTest` + stub HTTP servers | `GatewayRoutingTest`: each path reaches the right service |
+
 ## Design notes
 
 - Each service owns its own database; services never read another service's data directly.
